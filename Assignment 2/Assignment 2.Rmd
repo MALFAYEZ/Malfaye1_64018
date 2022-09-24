@@ -1,0 +1,111 @@
+---
+title: "Assignment 2"
+output:
+  html_document: default
+  pdf_document: default
+date: "2022-09-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+###installing package
+library("lpSolve")
+library(lpSolveAPI)
+
+```
+
+
+```{r}
+### creating lp with o constraints and 9 decision variables
+lprec <-make.lp(0,9)
+lprec
+
+```
+
+
+```{r}
+### Using Max function to maximize the profit
+set.objfn(lprec, c(420,360,300,420,360,300,420,360,300))
+lp.control(lprec,sense="max")
+```
+
+
+```{r}
+### Using Max function to maximize the profit
+set.objfn(lprec, c(420,360,300,420,360,300,420,360,300))
+lp.control(lprec,sense="max")
+```
+
+```{r}
+### Adding constraints 
+
+#Production Capacity Constraints
+
+add.constraint(lprec,c(1, 1, 1, 0, 0, 0, 0, 0, 0), "<=",750)
+add.constraint(lprec,c(0, 0, 0, 1, 1, 1, 0, 0, 0), "<=",900)
+add.constraint(lprec,c(0, 0, 0, 0, 0, 0, 1, 1, 1), "<=",450)
+
+###Storage Capacity constraints
+
+add.constraint(lprec,c(20, 15, 12, 0, 0, 0, 0, 0, 0), "<=",13000)
+add.constraint(lprec,c(0, 0, 0, 20, 15, 12, 0, 0, 0), "<=",12000)
+add.constraint(lprec,c(0, 0, 0, 0, 0, 0, 20, 15, 12), "<=",5000)
+
+###Sales Forcast constraints
+
+add.constraint(lprec,c(1, 1, 1, 0, 0, 0, 0, 0, 0), "<=",900)
+add.constraint(lprec,c(0, 0, 0, 1, 1, 1, 0, 0, 0), "<=",1200)
+add.constraint(lprec,c(0, 0, 0, 0, 0, 0, 1, 1, 1), "<=",750)
+
+#Plants Excess capacity constraints
+
+add.constraint(lprec, c(900, 0, 0, 900, 0, 0, 900, 0, 0) - c(0, 750, 0, 0, 750, 0, 0, 750, 0), "=", 0)
+
+add.constraint(lprec, c(0, 450, 0, 0, 450, 0, 0, 450, 0) - c(0, 0, 900, 0, 0, 900, 0, 0, 900), "=", 0)
+
+
+add.constraint(lprec, c(450, 0, 0, 450, 0, 0, 450, 0, 0) - c(0, 0, 750, 0, 0, 750, 0, 0, 750), "=", 0)
+
+
+
+```
+
+```{r}
+RowNames <- c("Production 1 ","Production 2 ","Production 3","Storage p1","storage p2","storage p3","Sales 1","ales 2","Sales 3","Excess capacity 1","Excess capacity 2","Excess capacity 3")
+ColNames <- c("L1", "L2", "L3","M1","M2","M3","S1","S2","S3")
+dimnames(lprec) <- list(RowNames, ColNames)
+
+```
+
+```{r}
+### Objective Function
+
+solve(lprec)
+get.objective(lprec)
+
+
+```
+
+# The objective function is 684955.8 $
+
+
+```{r}
+### Get Variables
+
+get.variables(lprec)
+
+```
+
+In order to reach the max profit of 684955.8 $
+we have to produce the following  :
+
+Plant 1 : 500.000000 of large products , 2.654867 of Medium Products , and 161.061947 of Small Products
+
+Plant 2 : 250.000000 of large products , and 796.460177 of Medium Products 
+
+Plant 3 : 148.230088 of Small products 
+
+
