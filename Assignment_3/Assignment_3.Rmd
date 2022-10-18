@@ -1,0 +1,173 @@
+---
+title: "Assignment_3"
+output: html_document
+date: "2022-10-16"
+---
+
+
+Transportation problem
+
+
+Munerah Al-Fayez 
+
+
+Heart Start produces automated external defibrillators (AEDs) in each of two different 
+plants (A and B). The unit production costs and monthly production capacity of the two 
+plants are indicated in the table below. The AEDs are sold through three wholesalers. The 
+shipping cost from each plant to the warehouse of each wholesaler along with the 
+monthly demand from each wholesaler are also indicated in the table. How many AEDs 
+should be produced in each plant, and how should they be distributed to each of the three 
+wholesaler warehouses so as to minimize the combined cost of production and shipping? 
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+The unit production costs and monthly production capacity of the two 
+plants are indicated in the table below. The AEDs are sold through three wholesalers. The 
+shipping cost from each plant to the warehouse of each wholesaler along with the 
+monthly demand from each wholesaler are also indicated in the table
+
+```{r}
+tab <- matrix(c(22,14,30,600,100,
+                16,20,24,625,120,
+                80,60,70,"-","-") , ncol=5 , byrow=TRUE)
+
+colnames(tab) <- c("Warehouse1","Warehouse2","Warehouse3","Prod cost","Prod Capacity") 
+row.names(tab) <- c("Plant A","Plant B","Demand")
+tab <- as.table(tab)
+tab
+
+
+
+
+
+
+```
+
+The above transportation problem can be formoulated as below 
+
+  $$\text{Min} \hspace{.2cm} TC = 22 X_{11} +14 X_{12} +30 X_{13}$$
+  $$+ 16 X_{21} + 20 X_{22} + 24 X_{23} $$
+
+/text{subject to}
+
+#Production Capacity consntraints 
+Production plant A :
+$$ X_{11} +X_{12}+X_{13} \le 100 $$
+Production Plant B :
+$$ X_{21} +X_{22}+X_{23} \le 120 $$
+
+
+#Demand Consntraints 
+
+Demand Warehouse 1 :
+$$ X_{11} + X_{21} \ge 80 $$
+Demand Warehouse 2 :
+$$ X_{12} + X_{22} \ge 60 $$
+Demand Warehouse 3 :
+$$ X_{13} + X_{23} \ge 70 $$
+Non-negativity of the variables
+
+$$ X_{ij} \ge 0 $$
+Where 
+
+$$ i = 1,2,3 $$
+And 
+
+$$ j = 1,2,3 $$
+1. Formulate and solve this transportation problem using R
+
+#Solving the above transportation cost minimization problem using R . This Transportation problem is unbalanced one . Demand is less than supply by 10 , So I create a dummy variable in column 4 with transportation cost zero and demand 10 .
+
+```{r}
+library(lpSolveAPI)
+library(lpSolve)
+# Set up cost matrix
+costs <- matrix(c(622,614,630,0,
+                641,645,649,0) , ncol=4 , byrow=TRUE)
+
+# Set up cost table for each warehouse 
+
+colnames(costs) <- c("Warehouse1","Warehouse2","Warehouse3","Dummy") 
+row.names(costs) <- c("Plant A","Plant B")
+costs <- as.table(costs)
+costs
+
+```
+
+```{r}
+# Set up constraints signs and right-hand sides (production side )
+row.signs <- rep("<=",2)
+row.rhs <- c(100,120)
+
+# Demand consntraints 
+col.signs <- rep(">=",4)
+col.rhs <- c(80,60,70,10)
+
+#Run
+
+lptrans <- lp.transport(costs, "min", row.signs, row.rhs, col.signs, col.rhs)
+
+#Values of all 6 variables
+lptrans$solution
+
+
+
+
+```
+
+```{r}
+# Value of the objective function
+lptrans$objval
+```
+When solved the transportation problem, I got the values of the variables as
+$$x_{12}= 60$$
+$$x_{13}= 40$$
+$$x_{21}= 80$$
+$$x_{23}= 30$$
+$$x_{24}= 10$$
+ 132,790 is the minimum  combined cost of production and shipping founded for the optimal solution . 
+In order to minimize the combined cost of production and shipping 
+Plant A should produce 100 units , 60 units for the warehouse 2 and 40 units for warehouse 3 . 
+Plant B should produce 110 units , 80 units for the warehouse 1 and 30 units for warehouse 3 . 
+
+
+2. Formulate the dual of this transportation problem
+
+
+$$\text{Max} \hspace{.2cm} VA = (80 P^d_{1} +60 P^d_{2} +70 P^d_{3})-(100 P^o_{1}-120 P^o_{2})$$
+Subject to 
+
+#Plant A consntraints :
+$$ P^d_{1} -P^o_{1} \ge 22 $$
+$$ P^d_{2} -P^o_{1} \ge 14 $$
+$$ P^d_{3} -P^o_{1} \ge 30 $$
+#Plant B consntraints :
+
+$$ P^d_{1} -P^o_{2} \ge 16 $$
+$$ P^d_{2} -P^o_{2} \ge 20 $$
+$$ P^d_{3} -P^o_{2} \ge 24 $$
+Non-negativity of the variables
+
+$$ P^j_{i} \ge 0 $$
+Where 
+
+$$ i = 1,2,3 $$
+3. Make an economic interpretation of the dual
+```{r}
+lptrans$duals
+```
+
+As it is known , the solutions of the Dual is nothing , but the shadow prices of the Primal .
+The dual solution of this problem indicate that all of the shadow prices for the primal problem is equal to zero , which means there is no possibility to increase profit or decrease cost by reallocation resources (The result we have conclude is the feasible solution ) .in this case marginal revenue is equal to marginal cost . 
+$$MR =MC $$
+
+
+
+
+
+
+
+
