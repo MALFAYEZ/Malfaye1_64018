@@ -401,7 +401,7 @@ tab</code></pre>
 <p><span class="math display">\[\text{Min} \hspace{.2cm} TC = 22 X_{11}
 +14 X_{12} +30 X_{13}\]</span> <span class="math display">\[+ 16 X_{21}
 + 20 X_{22} + 24 X_{23} \]</span></p>
-<p>/text{subject to}</p>
+<p>subject to</p>
 <p>#Production Capacity consntraints Production plant A : <span class="math display">\[ X_{11} +X_{12}+X_{13} \le 100 \]</span>
 Production Plant B : <span class="math display">\[ X_{21} +X_{22}+X_{23}
 \le 120 \]</span></p>
@@ -433,7 +433,7 @@ costs</code></pre>
 <pre><code>##         Warehouse1 Warehouse2 Warehouse3 Dummy
 ## Plant A        622        614        630     0
 ## Plant B        641        645        649     0</code></pre>
-<pre class="r"><code># Set up consntraints signs and right-hand sides (production side )
+<pre class="r"><code># Set up constraints signs and right-hand sides (production side )
 row.signs &lt;- rep(&quot;&lt;=&quot;,2)
 row.rhs &lt;- c(100,120)
 
@@ -463,18 +463,49 @@ units for the warehouse 1 and 30 units for warehouse 3 .</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Formulate the dual of this transportation problem</li>
 </ol>
+<p><span class="math display">\[P^d\text{ :price at
+destination}\]</span> <span class="math display">\[P^o\text{ :price at
+the plant (operation)}\]</span> <span class="math display">\[i\text{ :
+warehouse number}\]</span></p>
 <p><span class="math display">\[\text{Max} \hspace{.2cm} VA = (80
-P^d_{1} +60 P^d_{2} +70 P^d_{3})-(100 P^o_{1}-120 P^o_{2})\]</span>
-Subject to</p>
+P^d_{1} +60 P^d_{2} +70 P^d_{3})-(100 P^o_{1}
++120 P^o_{2})\]</span></p>
+<p><span class="math display">\[  = 80 P^d_{1} +60 P^d_{2} +70
+P^d_{3}-100 P^o_{1}-120 P^o_{2}\]</span></p>
+<p>#Subject to</p>
 <p>#Plant A consntraints : <span class="math display">\[ P^d_{1}
--P^o_{1} \ge 22 \]</span> <span class="math display">\[ P^d_{2} -P^o_{1}
-\ge 14 \]</span> <span class="math display">\[ P^d_{3} -P^o_{1} \ge 30
-\]</span> #Plant B consntraints :</p>
-<p><span class="math display">\[ P^d_{1} -P^o_{2} \ge 16 \]</span> <span class="math display">\[ P^d_{2} -P^o_{2} \ge 20 \]</span> <span class="math display">\[ P^d_{3} -P^o_{2} \ge 24 \]</span> Non-negativity
-of the variables</p>
+-P^o_{1} \ge 622 \]</span> <span class="math display">\[ P^d_{2}
+-P^o_{1} \ge 614 \]</span> <span class="math display">\[ P^d_{3}
+-P^o_{1} \ge 630 \]</span> #Plant B consntraints :</p>
+<p><span class="math display">\[ P^d_{1} -P^o_{2} \ge 641\]</span> <span class="math display">\[ P^d_{2} -P^o_{2} \ge 645 \]</span> <span class="math display">\[ P^d_{3} -P^o_{2} \ge 649 \]</span>
+Non-negativity of the variables</p>
 <p><span class="math display">\[ P^j_{i} \ge 0 \]</span> Where</p>
-<p><span class="math display">\[ i = 1,2,3 \]</span> 3. Make an economic
-interpretation of the dual</p>
+<p><span class="math display">\[ i = 1,2,3 \]</span> These constraints
+can be modified as :</p>
+<p>#Plant A consntraints :</p>
+<p><span class="math display">\[ P^d_{1}  \ge 622 + P^o_{1}\]</span>
+<span class="math display">\[ P^d_{2} \ge 614 + P^o_{1}\]</span> <span class="math display">\[ P^d_{3}  \ge 630 + P^o_{1} \]</span> #Plant B
+consntraints :</p>
+<p><span class="math display">\[ P^d_{1} \ge 641 +P^o_{2}\]</span> <span class="math display">\[ P^d_{2}  \ge 645 +P^o_{2} \]</span> <span class="math display">\[ P^d_{3}  \ge 649 + P^o_{2} \]</span> <span class="math display">\[ P^j_{i} \ge 0 \]</span> Where</p>
+<p><span class="math display">\[ i = 1,2,3 \]</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Make an economic interpretation of the dual</li>
+</ol>
+<p>While the objective function of the Primal is to minimize the cost at
+the operation side (plants), the objective function of the Dual is to
+maximize the revenue at the destination side (warehouses).</p>
+<p>The price at the destination should be equal to or more than the
+price at the plant (production)in addition to the cost to make a profit.
+Which is already represented by the Dual constraints. <span class="math display">\[P^d_{i}&gt;=costs+P^o_{i}\]</span> To translate
+that into an economic term <span class="math display">\[MR _{i} &gt;=
+MC_{i}\]</span> Marginal revenue (MR): refers to the marginal revenue
+which is the increase in revenue that results from a one-unit increase
+in production. Marginal cost (MC): refers to the cost added by producing
+one additional unit</p>
+<p>When marginal revenue equals marginal cost, profit has reached its
+maximum, so production should be stopped at that point as increasing
+production more would not make any more profits and eventually lose
+money. So, in this problem the aim is to reach the point where <span class="math display">\[MR = MC\]</span></p>
 <pre class="r"><code>lptrans$duals</code></pre>
 <pre><code>##      [,1] [,2] [,3] [,4]
 ## [1,]    0    0    0    0

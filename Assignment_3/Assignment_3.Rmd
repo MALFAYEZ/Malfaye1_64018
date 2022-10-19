@@ -8,7 +8,7 @@ date: "2022-10-16"
 Transportation problem
 
 
-Munerah Al-Fayez 
+Munerah Al-Fayez
 
 
 Heart Start produces automated external defibrillators (AEDs) in each of two different 
@@ -51,7 +51,7 @@ The above transportation problem can be formoulated as below
   $$\text{Min} \hspace{.2cm} TC = 22 X_{11} +14 X_{12} +30 X_{13}$$
   $$+ 16 X_{21} + 20 X_{22} + 24 X_{23} $$
 
-/text{subject to}
+subject to
 
 #Production Capacity consntraints 
 Production plant A :
@@ -134,28 +134,70 @@ Plant A should produce 100 units , 60 units for the warehouse 2 and 40 units for
 Plant B should produce 110 units , 80 units for the warehouse 1 and 30 units for warehouse 3 . 
 
 
+
+
 2. Formulate the dual of this transportation problem
 
 
-$$\text{Max} \hspace{.2cm} VA = (80 P^d_{1} +60 P^d_{2} +70 P^d_{3})-(100 P^o_{1}-120 P^o_{2})$$
-Subject to 
+$$P^d\text{ :price at destination}$$
+$$P^o\text{ :price at the plant (operation)}$$
+$$i\text{ : warehouse number}$$
+
+$$\text{Max} \hspace{.2cm} VA = (80 P^d_{1} +60 P^d_{2} +70 P^d_{3})-(100 P^o_{1}
++120 P^o_{2})$$
+
+
+$$  = 80 P^d_{1} +60 P^d_{2} +70 P^d_{3}-100 P^o_{1}-120 P^o_{2}$$
+
+#Subject to 
 
 #Plant A consntraints :
-$$ P^d_{1} -P^o_{1} \ge 22 $$
-$$ P^d_{2} -P^o_{1} \ge 14 $$
-$$ P^d_{3} -P^o_{1} \ge 30 $$
+$$ P^d_{1} -P^o_{1} \ge 622 $$
+$$ P^d_{2} -P^o_{1} \ge 614 $$
+$$ P^d_{3} -P^o_{1} \ge 630 $$
 #Plant B consntraints :
 
-$$ P^d_{1} -P^o_{2} \ge 16 $$
-$$ P^d_{2} -P^o_{2} \ge 20 $$
-$$ P^d_{3} -P^o_{2} \ge 24 $$
+$$ P^d_{1} -P^o_{2} \ge 641$$
+$$ P^d_{2} -P^o_{2} \ge 645 $$
+$$ P^d_{3} -P^o_{2} \ge 649 $$
 Non-negativity of the variables
 
 $$ P^j_{i} \ge 0 $$
 Where 
 
 $$ i = 1,2,3 $$
+These constraints can be modified as :
+
+#Plant A consntraints :
+
+$$ P^d_{1}  \ge 622 + P^o_{1}$$
+$$ P^d_{2} \ge 614 + P^o_{1}$$
+$$ P^d_{3}  \ge 630 + P^o_{1} $$
+#Plant B consntraints :
+
+$$ P^d_{1} \ge 641 +P^o_{2}$$
+$$ P^d_{2}  \ge 645 +P^o_{2} $$
+$$ P^d_{3}  \ge 649 + P^o_{2} $$
+$$ P^j_{i} \ge 0 $$
+Where 
+
+$$ i = 1,2,3 $$
+
 3. Make an economic interpretation of the dual
+
+While the objective function of the Primal is to minimize the cost at the operation side (plants), the objective function of the Dual is to maximize the revenue at the destination side (warehouses). 
+
+The price at the destination should be equal to or more than the price at the plant (production)in addition to the cost to make a profit. Which is already represented by the Dual constraints.
+$$P^d_{i}>=costs+P^o_{i}$$
+To translate that into an economic term
+$$MR _{i} >= MC_{i}$$
+Marginal revenue (MR): refers to the marginal revenue which is the increase in revenue that results from a one-unit increase in production.
+Marginal cost (MC): refers to the cost added by producing one additional unit
+
+When marginal revenue equals marginal cost, profit has reached its maximum, so production should be stopped at that point as increasing production more would not make any more profits and eventually lose money. So, in this problem the aim is to reach the point where $$MR = MC$$
+
+
+ 
 ```{r}
 lptrans$duals
 ```
